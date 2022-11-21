@@ -4,10 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lenx/todo/pkg/service"
 
-	"github.com/swaggo/gin-swagger"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
-
-	_ "github.com/lenx/todo/docs"
 )
 
 type Handler struct {
