@@ -1,21 +1,24 @@
-package todo_app
+package todo
 
-import (
-	"errors"
-	"fmt"
-	"time"
-)
+import "errors"
 
 type TodoList struct {
-	Id          int    `form:"-" json:"id" db:"id"`
-	Title       string `form:"title" json:"title" db:"title" binding:"required"`
-	Description string `form:"description" json:"description" db:"description"`
+	Id          int    `json:"id" db:"id"`
+	Title       string `json:"title" db:"title" binding:"required"`
+	Description string `json:"description" db:"description"`
 }
 
-type UserList struct {
+type UsersList struct {
 	Id     int
 	UserId int
 	ListId int
+}
+
+type TodoItem struct {
+	Id          int    `json:"id" db:"id"`
+	Title       string `json:"title" db:"title" binding:"required"`
+	Description string `json:"description" db:"description"`
+	Done        bool   `json:"done" db:"done"`
 }
 
 type ListsItem struct {
@@ -25,44 +28,28 @@ type ListsItem struct {
 }
 
 type UpdateListInput struct {
-	Title       *string `form:"title" json:"title" db:"title" binding:"required"`
-	Description *string `form:"description" json:"description" db:"description"`
+	Title       *string `json:"title"`
+	Description *string `json:"description"`
 }
 
 func (i UpdateListInput) Validate() error {
-	fmt.Println(i.Title)
-	if *i.Title == "" && *i.Description == "" {
+	if i.Title == nil && i.Description == nil {
 		return errors.New("update structure has no values")
 	}
 
 	return nil
-}
-
-type Item struct {
-	Id          int    `json:"id" db:"id"`
-	Title       string `json:"title" db:"title" binding:"required"`
-	Description string `json:"description" db:"description"`
-	Done bool `json:"done" db:"done"`
-	Deadline time.Time `json:"deadline" db:"deadline"`
 }
 
 type UpdateItemInput struct {
-	Title       *string `json:"title" binding:"required"`
+	Title       *string `json:"title"`
 	Description *string `json:"description"`
-	Done *bool `json:"done"`
-	Deadline time.Time `json:"deadline" db:"deadline"`
+	Done        *bool   `json:"done"`
 }
 
 func (i UpdateItemInput) Validate() error {
-	fmt.Println(*i.Title, *i.Description)
-	if *i.Title == "" && *i.Description == "" && i.Done == nil {
+	if i.Title == nil && i.Description == nil && i.Done == nil {
 		return errors.New("update structure has no values")
 	}
 
 	return nil
-}
-
-type Tag struct {
-	Id          int    `json:"id" db:"id"`
-	Title       string `json:"title" binding:"required"`
 }
