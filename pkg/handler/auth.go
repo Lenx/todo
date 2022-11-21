@@ -4,76 +4,72 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	todo "github.com/lenx/todo/pkg"
+	"github.com/lenx/todo"
 )
 
+// @Summary SignUp
+// @Tags auth
+// @Description create account
+// @ID create-account
+// @Accept  json
+// @Produce  json
+// @Param input body todo.User true "account info"
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /auth/sign-up [post]
 func (h *Handler) signUp(c *gin.Context) {
-
-	/*
-			var input todo.User
-
-		    if err := c.ShouldBind(&input); err != nil {
-		        c.AbortWithError(http.StatusBadRequest, err)
-		        return
-		    }
-	*/
-
 	var input todo.User
 
-	// ловим JSON и упаковываем в структуру
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "invalid input body")
 		return
 	}
 
-	// запускаем метод CreateUser у сервиса, получаем id созданного юзера
 	id, err := h.services.Authorization.CreateUser(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	// подготавливаем JSON с ответом
-
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"id": id,
 	})
-
-}
-
-func (h *Handler) signUpShow(c *gin.Context) {
-	c.HTML(http.StatusOK, "signup.html", nil)
-}
-
-func (h *Handler) signInShow(c *gin.Context) {
-	c.HTML(http.StatusOK, "signin.html", nil)
 }
 
 type signInInput struct {
-	Username string `form:"username" json:"username" binding:"required"`
-	Password string `form:"password"json:"password" binding:"required"`
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
+// @Summary SignIn
+// @Tags auth
+// @Description login
+// @ID login
+// @Accept  json
+// @Produce  json
+// @Param input body signInInput true "credentials"
+// @Success 200 {string} string "token"
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /auth/sign-in [post]
 func (h *Handler) signIn(c *gin.Context) {
-
 	var input signInInput
 
-	// ловим JSON и упаковываем в структуру
 	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid input body")
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	// генерируем JWT-токен
 	token, err := h.services.Authorization.GenerateToken(input.Username, input.Password)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	// подготавливаем JSON с ответом
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"token": token,
 	})
-
 }

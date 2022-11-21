@@ -1,4 +1,4 @@
-module github.com/Hanqur/todo_app
+module github.com/lenx/todo
 
 go 1.17
 
