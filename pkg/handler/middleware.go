@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -11,37 +10,28 @@ import (
 
 const (
 	authorizationHeader = "Authorization"
-	userCtx = "userId"
+	userCtx             = "userId"
 )
 
-// проверка токена авторизации
 func (h *Handler) userIdentity(c *gin.Context) {
-	fmt.Println("userIdentity")
-	header := c.GetHeader(authorizationHeader) // получение токена
+	header := c.GetHeader(authorizationHeader)
 	if header == "" {
 		newErrorResponse(c, http.StatusUnauthorized, "empty auth header")
 		return
 	}
 
 	headerParts := strings.Split(header, " ")
-	fmt.Println(headerParts)
-	if len(headerParts) != 2 {
+	if len(headerParts) != 2 || headerParts[0] != "Bearer" {
 		newErrorResponse(c, http.StatusUnauthorized, "invalid auth header")
 		return
 	}
 
-	if headerParts[0] != "Bearer" {
-		newErrorResponse(c, http.StatusUnauthorized, "invalid auth header")
-		return
-	}
-
-	if headerParts[1] == "" {
+	if len(headerParts[1]) == 0 {
 		newErrorResponse(c, http.StatusUnauthorized, "token is empty")
 		return
 	}
 
-	// парсинг токена
-	userId, err := h.services.ParseToken(headerParts[1])
+	userId, err := h.services.Authorization.ParseToken(headerParts[1])
 	if err != nil {
 		newErrorResponse(c, http.StatusUnauthorized, err.Error())
 		return
@@ -53,16 +43,13 @@ func (h *Handler) userIdentity(c *gin.Context) {
 func getUserId(c *gin.Context) (int, error) {
 	id, ok := c.Get(userCtx)
 	if !ok {
-		newErrorResponse(c, http.StatusInternalServerError, "user id not found")
 		return 0, errors.New("user id not found")
 	}
 
 	idInt, ok := id.(int)
 	if !ok {
-		newErrorResponse(c, http.StatusInternalServerError, "user is invalid type")
-		return 0, errors.New("user is invalid type")
+		return 0, errors.New("user id is of invalid type")
 	}
 
 	return idInt, nil
-
 }
