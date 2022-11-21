@@ -1,3 +1,0 @@
-Миграция:
-migrate -path ./schema -database 'postgres://vdaixtwmwzjszb:a3b918f537d674aadad9bc8ad425c955d768a65ac618130d672b97d98af84f90@ec2-54-76-249-45.eu-west-1.compute.amazonaws.com:5432/d3malgklo7m719' up
-migrate -path ./migrations/add_deadline_into_todo_items -database 'postgres://gpxcbbcnahrqwb:c1a6e92e65a585b4f58d22f2d93f28041b29020dfcd96f419dd03617620698ee@ec2-52-209-185-5.eu-west-1.compute.amazonaws.com:5432/d9qjphdf63ih0c' up
