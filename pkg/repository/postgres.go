@@ -7,13 +7,11 @@ import (
 )
 
 const (
-	userTable = "users"
-	todoListsTable = "todo_lists"
+	usersTable      = "users"
+	todoListsTable  = "todo_lists"
 	usersListsTable = "users_lists"
-	todoItemsTable = "todo_items"
+	todoItemsTable  = "todo_items"
 	listsItemsTable = "lists_items"
-	tagsTable = "tags"
-	itemTagsTable = "items_tags"
 )
 
 type Config struct {
@@ -25,7 +23,7 @@ type Config struct {
 	SSLMode  string
 }
 
-func NewPostrgesDB(cfg Config) (*sqlx.DB, error) {
+func NewPostgresDB(cfg Config) (*sqlx.DB, error) {
 	db, err := sqlx.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
 		cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.Password, cfg.SSLMode))
 	if err != nil {
