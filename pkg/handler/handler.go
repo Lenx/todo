@@ -5,14 +5,17 @@ import (
 	"github.com/lenx/todo/pkg/service"
 )
 
+// структура, необходимая для установления зависимостей
 type Handler struct {
 	services *service.Service
 }
 
+// создаем объект Handler
 func NewHandler(services *service.Service) *Handler {
 	return &Handler{services: services}
 }
 
+// создаем роутер(gin) и инициализируем эндпоинты
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 

@@ -13,6 +13,7 @@ const (
 	userCtx             = "userId"
 )
 
+// проверка токена авторизации
 func (h *Handler) userIdentity(c *gin.Context) {
 	header := c.GetHeader(authorizationHeader)
 	if header == "" {
